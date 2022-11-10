@@ -3,4 +3,4 @@ Copy the "ported_indicators" folder into the root of your project directory, and
 can be found in Jesse's [documentation](https://docs.jesse.trade/docs/indicators/custom-indicators.html#tutorial-for-a-custom-indicator). 
 <br>
 <br> 
-All indicators have been tested for accuracy with a sequential setting set to False and a candle warm-up period of 960. 
+All indicators have been tested for accuracy with a sequential setting set to false and a candle warm-up period of 960. 

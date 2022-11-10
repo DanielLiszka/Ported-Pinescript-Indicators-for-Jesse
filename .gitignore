@@ -1,0 +1,6 @@
+.vs/
+.git/
+__pycache__/
+stock_indicators_library/
+**/*.pyc
+*.pyc

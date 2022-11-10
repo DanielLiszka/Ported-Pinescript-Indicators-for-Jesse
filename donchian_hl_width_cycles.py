@@ -1,0 +1,40 @@
+from jesse.helpers import get_candle_source, slice_candles, np_shift
+import numpy as np
+from numba import njit,jit
+import talib 
+from typing import Union
+from jesse.helpers import get_config
+from collections import namedtuple
+from numpy.lib.stride_tricks import sliding_window_view
+from scipy.ndimage.filters import maximum_filter1d, minimum_filter1d
+from collections import namedtuple
+
+#jesse backtest '2021-01-03' '2021-03-02'
+"""
+https://www.tradingview.com/script/HfIZHwba-RS-Donchian-HL-Width-Cycle-Information/
+""" 
+DHL = namedtuple('DHL',['cycle_trend', 'f_ph', 'f_pl','avg'])
+
+def dhl(candles: np.ndarray, length: int = 28 , source_type: str = "close", sequential: bool = False) -> DHL :     
+    candles = slice_candles(candles, sequential)
+    source = get_candle_source(candles, source_type=source_type)
+    _max = talib.MAX(candles[:,3],length)
+    _min = talib.MIN(candles[:,4],length)
+    cycle_trend = np.full_like(source,1)
+    f_ph = np.full_like(source,0)
+    f_pl = np.full_like(source,0)
+    avg = np.full_like(source,0)
+    for i in range(source.shape[0]):
+        f_ph[i] = (100 * (candles[:,3][i] - _max[i]) / (_max[i] - _min[i]))
+        f_pl[i] = (100 * (candles[:,4][i] - _max[i]) / (_max[i] - _min[i]))
+        avg[i] = (f_ph[i] + f_pl[i])/2
+        cycle_trend[i] = cycle_trend[i-1]
+        if cycle_trend[i] < 0 and f_ph[i] >= 0.0:
+            cycle_trend[i] = 1
+        if cycle_trend[i] > 0 and f_pl[i] <= -100.0: 
+            cycle_trend[i] = -1 
+    if sequential:
+        return DHL(cycle_trend,f_ph,f_pl,avg)
+    else:
+        return DHL(cycle_trend[-1],f_ph[-1],f_pl[-1],avg[-1])
+  

@@ -5,7 +5,7 @@ import talib
 from typing import Union
 from jesse.helpers import get_config, same_length, get_candle_source, slice_candles, np_shift
 from collections import namedtuple
-from custom_indicators.helpful_functions import std2
+from custom_indicators.ported_indicators.helpful_functions import std2
 #jesse backtest  '2021-01-03' '2021-03-02'
 
 VIXFIX = namedtuple('VIXFIX',['vixfix','color'])

@@ -6,7 +6,6 @@ from typing import Union
 from jesse.helpers import get_config
 from collections import namedtuple
 
-#jesse backtest  '2021-01-03' '2021-03-02'
 BBB = namedtuple('BBB',['basis', 'upper', 'lower','colorcenter','bandcolor'])
 
 '''
